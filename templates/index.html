@@ -8,15 +8,16 @@
 <body class="bg-light">
     <div class="container" style="max-width: 500px; margin-top:50px;">
         <div class="text-center mb-4">
-            <img src="/static/tigermonk_logo.png" alt="Logo" style="width:120px;">
+            <img src="/static/logo.png" alt="Logo" style="width:120px;">
         </div>
-        <h2 class="text-center mb-4">Crypto Data Export</h2>
+        <h2 class="text-center mb-4">Crypto Data Export 🚀</h2>
         <form action="/fetch" method="post">
-            <div class="form-group mb-3">
+            <div class="form-group mb-3 position-relative">
                 <label>Trading Pair (e.g., DOGE/USDT)</label>
-                <input type="text" class="form-control" name="symbol" placeholder="DOGE/USDT" required>
+                <input type="text" id="symbol" class="form-control" name="symbol" autocomplete="off" placeholder="DOGE/USDT" required>
+                <div id="suggestions" class="list-group position-absolute w-100"></div>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>Timeframe</label>
                 <select class="form-control" name="timeframe">
                     <option value="1m">1 Minute</option>
@@ -27,11 +28,11 @@
                     <option value="1d">1 Day</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>Start Date</label>
                 <input type="date" class="form-control" name="start_date" required>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>End Date</label>
                 <input type="date" class="form-control" name="end_date" required>
             </div>
@@ -40,5 +41,45 @@
             </div>
         </form>
     </div>
+
+    <script>
+    const pairs = [
+        "BTC/USDT", "ETH/USDT", "DOGE/USDT", "ADA/USDT", "SOL/USDT",
+        "XRP/USDT", "DOT/USDT", "AVAX/USDT", "LTC/USDT", "LINK/USDT",
+        "BNB/USDT", "SHIB/USDT", "ATOM/USDT", "NEAR/USDT", "MATIC/USDT"
+    ];
+
+    const symbolInput = document.getElementById('symbol');
+    const suggestions = document.getElementById('suggestions');
+
+    symbolInput.addEventListener('input', function() {
+        const inputVal = this.value.toUpperCase();
+        suggestions.innerHTML = '';
+
+        if (inputVal.length === 0) return;
+
+        const filteredPairs = pairs.filter(pair => pair.startsWith(inputVal));
+
+        filteredPairs.forEach(pair => {
+            const item = document.createElement('button');
+            item.type = "button";
+            item.className = "list-group-item list-group-item-action";
+            item.innerText = pair;
+
+            item.addEventListener('click', function() {
+                symbolInput.value = pair;
+                suggestions.innerHTML = '';
+            });
+
+            suggestions.appendChild(item);
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!symbolInput.contains(e.target)) {
+            suggestions.innerHTML = '';
+        }
+    });
+    </script>
 </body>
 </html>
