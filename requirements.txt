@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+ccxt
+pandas
+python-multipart
+jinja2
