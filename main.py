@@ -9,6 +9,10 @@ from datetime import datetime
 
 app = FastAPI()
 
+# Ensure static folder exists
+if not os.path.exists("static"):
+    os.makedirs("static")
+
 # Template setup
 templates = Jinja2Templates(directory="templates")
 
