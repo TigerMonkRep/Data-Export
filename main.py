@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import ccxt
 import pandas as pd
 import os
@@ -10,6 +11,9 @@ app = FastAPI()
 
 # Template setup
 templates = Jinja2Templates(directory="templates")
+
+# Static files setup
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 DATA_FOLDER = "/data"
 os.makedirs(DATA_FOLDER, exist_ok=True)
