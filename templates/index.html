@@ -1,14 +1,28 @@
 <!DOCTYPE html>
-<html>
-<head><title>Data Export</title></head>
-<body>
-  <h2>Crypto Data Export</h2>
-  <form action="/fetch" method="post">
-    Trading Pair (e.g., DOGE/USDT): <input type="text" name="symbol"><br>
-    Timeframe (e.g., 1m): <input type="text" name="timeframe" value="1m"><br>
-    Start Date (YYYY-MM-DD): <input type="date" name="start_date"><br>
-    End Date (YYYY-MM-DD): <input type="date" name="end_date"><br>
-    <button type="submit">Fetch Data</button>
-  </form>
-</body>
-</html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Export</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container" style="max-width: 500px; margin-top:50px;">
+        <h2 class="mb-4">Crypto Data Export 🚀</h2>
+        <form action="/fetch" method="post">
+            <div class="form-group">
+                <label>Trading Pair (e.g., DOGE/USDT)</label>
+                <input type="text" class="form-control" name="symbol" placeholder="DOGE/USDT" required>
+            </div>
+            <div class="form-group">
+                <label>Timeframe</label>
+                <select class="form-control" name="timeframe">
+                    <option value="1m">1 Minute</option>
+                    <option value="5m">5 Minutes</option>
+                    <option value="15m">15 Minutes</option>
+                    <option value="1h">1 Hour</option>
+                    <option value="4h">4 Hours</option>
+                    <option value="1d">1 Day</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Start Date</
