@@ -4,6 +4,32 @@
     <meta charset="UTF-8">
     <title>Data Export</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #progress-container {
+            display: none;
+            margin-top: 20px;
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 15px;
+            transition: width 0.2s;
+        }
+        #rabbit {
+            position: absolute;
+            left: 0;
+            top: -10px;
+            font-size: 24px;
+            transition: left 0.2s;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container" style="max-width: 500px; margin-top:50px;">
@@ -11,7 +37,7 @@
             <img src="/static/tigermonk_logo.png" alt="Logo" style="width:120px;">
         </div>
         <h2 class="text-center mb-4">Crypto Data Export 🚀</h2>
-        <form action="/fetch" method="post">
+        <form id="data-form" action="/fetch" method="post">
             <div class="form-group mb-3 position-relative">
                 <label>Trading Pair (e.g., DOGE/USDT)</label>
                 <input type="text" id="symbol" class="form-control" name="symbol" autocomplete="off" placeholder="DOGE/USDT" required>
@@ -37,9 +63,15 @@
                 <input type="date" class="form-control" name="end_date" required>
             </div>
             <div class="text-center mt-4">
-                <button class="btn btn-primary w-100">Fetch Data</button>
+                <button id="fetch-btn" class="btn btn-primary w-100" type="submit">Fetch Data</button>
             </div>
         </form>
+
+        <!-- Progress Bar Container -->
+        <div id="progress-container">
+            <div id="rabbit">🐇</div>
+            <div id="progress-bar"></div>
+        </div>
     </div>
 
     <script>
@@ -79,6 +111,37 @@
         if (!symbolInput.contains(e.target)) {
             suggestions.innerHTML = '';
         }
+    });
+
+    // Fetch button and progress animation
+    document.getElementById("data-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        let progress = 0;
+        const progressBar = document.getElementById("progress-bar");
+        const rabbit = document.getElementById("rabbit");
+        const fetchBtn = document.getElementById("fetch-btn");
+        const progressContainer = document.getElementById("progress-container");
+
+        fetchBtn.disabled = true;
+        fetchBtn.innerText = "Fetching...";
+        progressContainer.style.display = "block";
+
+        const interval = setInterval(() => {
+            progress += 10;
+            progressBar.style.width = `${progress}%`;
+            rabbit.style.left = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    progressContainer.style.display = "none";
+                    fetchBtn.disabled = false;
+                    fetchBtn.innerText = "Fetch Data";
+                    document.getElementById("data-form").submit(); // Submit after animation
+                }, 500);
+            }
+        }, 300); // Speed of the animation
     });
     </script>
 </body>
