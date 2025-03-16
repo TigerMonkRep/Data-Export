@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Data Export</title></head>
+<body>
+  <h2>Crypto Data Export</h2>
+  <form action="/fetch" method="post">
+    Trading Pair (e.g., DOGE/USDT): <input type="text" name="symbol"><br>
+    Timeframe (e.g., 1m): <input type="text" name="timeframe" value="1m"><br>
+    Start Date (YYYY-MM-DD): <input type="date" name="start_date"><br>
+    End Date (YYYY-MM-DD): <input type="date" name="end_date"><br>
+    <button type="submit">Fetch Data</button>
+  </form>
+</body>
+</html>
