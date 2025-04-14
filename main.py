@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Query, HTTPException, Request, Form
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import ccxt
@@ -70,3 +70,45 @@ async def fetch_data(
 async def download(file_name: str):
     file_path = os.path.join(DATA_FOLDER, file_name)
     return FileResponse(file_path, filename=file_name)
+
+@app.post("/api/fetch")
+async def fetch_data_api(
+    symbol: str,
+    timeframe: str,
+    start_date: str,
+    end_date: str
+):
+    """
+    API endpoint for fetching historical data programmatically.
+    Returns JSON data directly instead of HTML response.
+    """
+    exchange = ccxt.binance({'enableRateLimit': True})
+
+    try:
+        since = exchange.parse8601(f"{start_date}T00:00:00Z")
+        end_timestamp = exchange.parse8601(f"{end_date}T23:59:59Z")
+    except:
+        raise HTTPException(status_code=400, detail="Invalid date format.")
+
+    ohlcv_data = []
+
+    while since < end_timestamp:
+        data = exchange.fetch_ohlcv(symbol, timeframe, since, limit=1000)
+        if not data:
+            break
+        ohlcv_data += data
+        since = data[-1][0] + exchange.parse_timeframe(timeframe)*1000
+
+    if not ohlcv_data:
+        raise HTTPException(status_code=404, detail="No data found.")
+
+    df = pd.DataFrame(ohlcv_data, columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+    df['Time'] = pd.to_datetime(df['Time'], unit='ms')
+
+    return JSONResponse(content={
+        "symbol": symbol,
+        "timeframe": timeframe,
+        "start_date": start_date,
+        "end_date": end_date,
+        "data": df.to_dict(orient='records')
+    })
